@@ -10,16 +10,18 @@
 
     <div class="interfaz">
         <h1 id="titulo">¡Feliz Cumpleaños, Hermano!</h1>
-        <p id="subtitulo" class="instrucciones">Mantén presionado el click para mover la cámara y toca el regalo grande 🎁</p>
+        <p id="subtitulo" class="instrucciones">Arrastra para girar la cámara y toca el regalo grande 🎁</p>
     </div>
 
     <canvas id="canvas-3d"></canvas>
 
     <div id="modal-visor" onclick="this.classList.remove('active')">
-        <div class="modal-contenido">
+        <div class="modal-contenido" onclick="event.stopPropagation()">
             <img id="img-visor" src="" alt="Recuerdo">
             <p id="txt-visor"></p>
-            <span class="cerrar-aviso">(Toca cualquier lado para cerrar)</span>
+            <span class="cerrar-aviso" onclick="document.getElementById('modal-visor').classList.remove('active')">
+                (Toca cualquier lado para cerrar)
+            </span>
         </div>
     </div>
 

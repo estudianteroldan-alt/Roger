@@ -15,6 +15,7 @@ body {
     width: 100%;
     height: 100%;
     z-index: 1;
+    touch-action: none; /* EVITA QUE EL MÓVIL HAGA SCROLL O INTERRUMPAL RAYCASTER */
 }
 
 /* Interfaz flotante */
@@ -25,11 +26,13 @@ body {
     text-align: center;
     z-index: 10;
     pointer-events: none;
+    padding: 0 10px; /* Evita que el texto toque los bordes en móviles */
+    box-sizing: border-box;
 }
 
 h1 {
     color: #ffffff;
-    font-size: 2.8rem;
+    font-size: 2.5rem; /* Bajado ligeramente de 2.8rem para que no rompa línea en pantallas chicas */
     margin: 0;
     /* Efecto neón vibrante */
     filter: drop-shadow(0 0 15px rgba(255, 0, 128, 0.8));
@@ -41,7 +44,7 @@ h1 {
 
 .instrucciones {
     color: #e0d5ff;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     margin-top: 8px;
     font-weight: 500;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
@@ -70,34 +73,41 @@ h1 {
 }
 
 .modal-contenido {
-    max-width: 420px;
+    width: 85%; /* Se adapta dinámicamente a pantallas pequeñas */
+    max-width: 420px; /* No crece más de esto en pantallas grandes */
     text-align: center;
     padding: 25px;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px); /* Soporte obligatorio para Safari en iPhone */
     border-radius: 24px;
     border: 2px solid rgba(0, 245, 255, 0.3);
     box-shadow: 0 20px 50px rgba(0, 245, 255, 0.2);
+    box-sizing: border-box;
 }
 
 .modal-contenido img { 
     width: 100%; 
+    max-height: 60vh; /* Evita que fotos muy verticales deformen el modal en el tlf */
+    object-fit: contain; /* Mantiene la proporción de la imagen sin estirarla */
     border-radius: 15px; 
     box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
 }
 
 .modal-contenido p { 
     color: white; 
-    font-size: 1.3rem; 
+    font-size: 1.2rem; 
     margin-top: 18px; 
     font-weight: 600;
 }
 
 .cerrar-aviso {
     color: #ffaa00; 
-    font-size: 0.9rem; 
+    font-size: 1rem; /* Un pelín más grande para que sea fácil de tocar con el dedo */
     cursor: pointer;
     font-weight: bold;
+    padding: 10px; /* Aumenta el área táctil sin alterar el diseño */
+    display: inline-block;
 }
 
 @keyframes brillar {
