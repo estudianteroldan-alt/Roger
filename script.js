@@ -4,7 +4,7 @@
 const recuerdos = [
     { foto: 'fotos/foto.jpg',  mensaje: '¡Gracias por ser el mejor hermano sin duda, te amo bro !' },
     { foto: 'fotos/foto1.png',  mensaje: 'Gracias por estar siempre en las buenas y malas. 🤜🤛' },
-    { foto: 'fotos/foto14.jpg', mensaje: '¡Por siempre hacer nuestras salidas divertidas!' },
+    { foto: 'fotos/foto14.JPG', mensaje: '¡Por siempre hacer nuestras salidas divertidas!' },
     { foto: 'fotos/foto3.jpg',  mensaje: '¡El mejor padre ❤️!' },
     { foto: 'fotos/foto4.jpeg', mensaje: ' Siempre apoyándonos en cada meta.' },
     { foto: 'fotos/foto5.jpg',  mensaje: ' ¡Por todas las risas y anécdotas!' },
@@ -66,9 +66,9 @@ mesa.position.y = 0;
 mesa.receiveShadow = true;
 escena.add(mesa);
 
-// PASTEL DE CUMPLE
+// PASTEL DE CUMPLE (Movido ligeramente a la izquierda para balancear con el adorno)
 const grupoPastel = new THREE.Group();
-grupoPastel.position.set(0, 0.3, -2.5);
+grupoPastel.position.set(-2.5, 0.3, -1.5);
 
 const plato = new THREE.Mesh(
     new THREE.CylinderGeometry(1.6, 1.7, 0.1, 32),
@@ -127,9 +127,9 @@ grupoVela.add(mechaEncendida);
 grupoPastel.add(grupoVela);
 escena.add(grupoPastel);
 
-// CAJA DE REGALO LLAMATIVA (Azul eléctrico con lazo dorado)
+// CAJA DE REGALO LLAMATIVA (Azul eléctrico con lazo dorado - Movido a la derecha)
 const grupoRegalo = new THREE.Group();
-grupoRegalo.position.set(0, 1, 1.5);
+grupoRegalo.position.set(2.5, 1, 1.5);
 
 const cuerpoCaja = new THREE.Mesh(
     new THREE.BoxGeometry(2, 2, 2),
@@ -152,6 +152,40 @@ const liston = new THREE.Mesh(
 );
 grupoRegalo.add(liston);
 escena.add(grupoRegalo);
+
+// --- NUEVO: ADORNO DEL NÚMERO 35 DE NEÓN ---
+const canvasTexto = document.createElement('canvas');
+const ctx = canvasTexto.getContext('2d');
+canvasTexto.width = 512;
+canvasTexto.height = 512;
+
+ctx.clearRect(0, 0, 512, 512);
+ctx.font = 'bold 280px Arial';
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+ctx.fillStyle = '#ffffff';
+ctx.shadowColor = '#ffcc00';
+ctx.shadowBlur = 30;
+ctx.strokeStyle = '#ffaa00';
+ctx.lineWidth = 15;
+ctx.strokeText('35', 256, 256);
+ctx.fillText('35', 256, 256);
+
+const texturaTexto = new THREE.CanvasTexture(canvasTexto);
+const geoAdorno = new THREE.PlaneGeometry(2.5, 2.5);
+const matAdorno = new THREE.MeshStandardMaterial({
+    map: texturaTexto,
+    transparent: true,
+    side: THREE.DoubleSide,
+    roughness: 0.1,
+    metalness: 0.1,
+    emissive: 0xffaa00,
+    emissiveIntensity: 0.5
+});
+
+const adorno35 = new THREE.Mesh(geoAdorno, matAdorno);
+adorno35.position.set(0, 1.5, -1.5); // Justo en el eje central superior de la mesa
+escena.add(adorno35);
 
 // SISTEMA DE CONFETI EN MOVIMIENTO
 const grupoConfeti = new THREE.Group();
@@ -204,7 +238,7 @@ recuerdos.forEach((recuerdo, index) => {
     grupoCartaIndividual.rotation.y = (Math.random() - 0.5) * 0.15;
     
     const matMarco = new THREE.MeshStandardMaterial({ 
-        color: 0xffffff, // Blanco puro para estilo Polaroid
+        color: 0xffffff, 
         roughness: 0.3 
     });
     const marcoBlanco = new THREE.Mesh(geoMarcoBlanco, matMarco);
@@ -225,14 +259,21 @@ recuerdos.forEach((recuerdo, index) => {
     grupoCartas.add(grupoCartaIndividual);
 });
 
-// --- 4. INTERACCIONES (RAYCASTER) ---
+// --- 4. INTERACCIONES (RAYCASTER OPTIMIZADO PC / MÓVIL) ---
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let cartaHover = null;
 
 function actualizarMouse(evento) {
-    mouse.x = (evento.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(evento.clientY / window.innerHeight) * 2 + 1;
+    if (evento.touches && evento.touches.length > 0) {
+        // Coordenadas para pantallas táctiles
+        mouse.x = (evento.touches[0].clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(evento.touches[0].clientY / window.innerHeight) * 2 + 1;
+    } else {
+        // Coordenadas para mouse convencional
+        mouse.x = (evento.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(evento.clientY / window.innerHeight) * 2 + 1;
+    }
 }
 
 window.addEventListener('mousemove', (evento) => {
@@ -266,12 +307,12 @@ window.addEventListener('mousemove', (evento) => {
     }
 });
 
-window.addEventListener('click', (evento) => {
+function procesarToqueOSeleccion(evento) {
     actualizarMouse(evento);
     raycaster.setFromCamera(mouse, camara);
     
     if (!regaloAbierto) {
-        const interseccionesRegalo = raycaster.intersectObjects(grupoRegalo.children);
+        const interseccionesRegalo = raycaster.intersectObjects(grupoRegalo.children, true);
         if (interseccionesRegalo.length > 0) abrirGranSorpresa();
     } else {
         const interseccionesCartas = raycaster.intersectObjects(grupoCartas.children, true);
@@ -283,7 +324,11 @@ window.addEventListener('click', (evento) => {
             if (objetoTocado.userData.tipo === 'carta') verFoto(objetoTocado.userData.index);
         }
     }
-});
+}
+
+// Eventos de interacción cruzada
+window.addEventListener('click', procesarToqueOSeleccion);
+window.addEventListener('touchstart', procesarToqueOSeleccion, { passive: true });
 
 // --- 5. LOGICA DE ANIMACIÓN Y REVELADO ---
 let regaloAbierto = false;
@@ -296,7 +341,7 @@ function abrirGranSorpresa() {
     if (regaloAbierto || animandoApertura) return;
     animandoApertura = true;
     document.getElementById('titulo').innerText = "✨ ¡Sorpresa! ✨";
-    document.getElementById('subtitulo').innerText = "Pasa el mouse sobre las cartas y haz clic para expandir tus recuerdos";
+    document.getElementById('subtitulo').innerText = "Pasa el mouse sobre las cartas para expandir tus recuerdos";
 }
 
 function verFoto(index) {
@@ -306,7 +351,6 @@ function verFoto(index) {
     document.getElementById('modal-visor').classList.add('active');
 }
 
-// Ocultar cartas inicialmente abajo para el efecto de revelado
 grupoCartas.children.forEach(carta => {
     carta.scale.set(0, 0, 0);
     carta.position.y = -1;
@@ -324,8 +368,12 @@ function bucleAnidado() {
     luzVela.intensity = 3 + parpadeo;
     mechaEncendida.material.emissiveIntensity = 8 + parpadeo * 2;
 
+    // Levitación y oscilación suave del adorno "35"
+    adorno35.position.y = 1.5 + Math.sin(tiempoTotal * 2) * 0.08;
+    adorno35.rotation.y = Math.sin(tiempoTotal * 0.5) * 0.1;
+
     // Animación física del confeti cayendo continuamente
-    压缩 = confetis.forEach(c => {
+    confetis.forEach(c => {
         c.mesh.position.y -= c.velY;
         c.mesh.rotation.x += c.rotX;
         c.mesh.rotation.y += c.rotY;
