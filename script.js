@@ -356,7 +356,7 @@ grupoCartas.children.forEach(carta => {
     carta.position.y = -1;
 });
 
-// --- 6. BUCLE DE RENDERIZADO ---
+// --- 6. BUCLE DE RENDERIZADO (CORREGIDO) ---
 const reloj = new THREE.Clock();
 
 function bucleAnidado() {
@@ -367,10 +367,6 @@ function bucleAnidado() {
     const parpadeo = Math.sin(tiempoTotal * 22) * 0.25;
     luzVela.intensity = 3 + parpadeo;
     mechaEncendida.material.emissiveIntensity = 8 + parpadeo * 2;
-
-    // Levitación y oscilación suave del adorno "35"
-    adorno35.position.y = 1.5 + Math.sin(tiempoTotal * 2) * 0.08;
-    adorno35.rotation.y = Math.sin(tiempoTotal * 0.5) * 0.1;
 
     // Animación física del confeti cayendo continuamente
     confetis.forEach(c => {
