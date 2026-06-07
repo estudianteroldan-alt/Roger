@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Sorpresa!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="interfaz">
+        <h1 id="titulo">¡Feliz Cumpleaños, Hermano!</h1>
+        <p id="subtitulo" class="instrucciones">Mantén presionado el click para mover la cámara y toca el regalo grande 🎁</p>
+    </div>
+
+    <canvas id="canvas-3d"></canvas>
+
+    <div id="modal-visor" onclick="this.classList.remove('active')">
+        <div class="modal-contenido">
+            <img id="img-visor" src="" alt="Recuerdo">
+            <p id="txt-visor"></p>
+            <span class="cerrar-aviso">(Toca cualquier lado para cerrar)</span>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    /* Fondo con un degradado alegre de fiesta nocturna */
+    background: radial-gradient(circle at center, #3a1c5c 0%, #110724 100%);
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* Lienzo 3D */
+#canvas-3d {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Interfaz flotante */
+.interfaz {
+    position: absolute;
+    top: 30px;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
+    pointer-events: none;
+}
+
+h1 {
+    color: #ffffff;
+    font-size: 2.8rem;
+    margin: 0;
+    /* Efecto neón vibrante */
+    filter: drop-shadow(0 0 15px rgba(255, 0, 128, 0.8));
+    background: linear-gradient(45deg, #ff007f, #ffaa00, #00f5ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: brillar 3s linear infinite alternate;
+}
+
+.instrucciones {
+    color: #e0d5ff;
+    font-size: 1.2rem;
+    margin-top: 8px;
+    font-weight: 500;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Visor Pantalla Completa (Modal) */
+#modal-visor {
+    position: absolute;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: rgba(12, 5, 26, 0.9); /* Un toque morado al fondo oscuro */
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+#modal-visor.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-contenido {
+    max-width: 420px;
+    text-align: center;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border-radius: 24px;
+    border: 2px solid rgba(0, 245, 255, 0.3);
+    box-shadow: 0 20px 50px rgba(0, 245, 255, 0.2);
+}
+
+.modal-contenido img { 
+    width: 100%; 
+    border-radius: 15px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+}
+
+.modal-contenido p { 
+    color: white; 
+    font-size: 1.3rem; 
+    margin-top: 18px; 
+    font-weight: 600;
+}
+
+.cerrar-aviso {
+    color: #ffaa00; 
+    font-size: 0.9rem; 
+    cursor: pointer;
+    font-weight: bold;
+}
+
+@keyframes brillar {
+    0% { filter: drop-shadow(0 0 10px rgba(255, 0, 128, 0.6)); }
+    100% { filter: drop-shadow(0 0 25px rgba(0, 245, 255, 0.9)); }
+}
