@@ -4,7 +4,7 @@
 const recuerdos = [
     { foto: 'fotos/foto.jpg',  mensaje: '¡Gracias por ser el mejor hermano sin duda, te amo bro !' },
     { foto: 'fotos/foto1.png',  mensaje: 'Gracias por estar siempre en las buenas y malas. 🤜🤛' },
-    { foto: 'fotos/foto14.JPG', mensaje: '¡Por siempre hacer nuestras salidas divertidas!' },
+    { foto: 'fotos/foto14.jpg', mensaje: '¡Por siempre hacer nuestras salidas divertidas!' },
     { foto: 'fotos/foto3.jpg',  mensaje: '¡El mejor padre ❤️!' },
     { foto: 'fotos/foto4.jpeg', mensaje: ' Siempre apoyándonos en cada meta.' },
     { foto: 'fotos/foto5.jpg',  mensaje: ' ¡Por todas las risas y anécdotas!' },
