@@ -57,7 +57,7 @@ escena.add(luzNeonRosa);
 
 // --- 3. CREACIÓN DE OBJETOS ---
 
-// MESA DE MADERA CLARA (Refleja espectacularmente los neones)
+// MESA DE MADERA CLARA
 const mesa = new THREE.Mesh(
     new THREE.BoxGeometry(15, 0.6, 9),
     new THREE.MeshStandardMaterial({ color: 0x8e5431, roughness: 0.3, metalness: 0.1 })
@@ -66,9 +66,9 @@ mesa.position.y = 0;
 mesa.receiveShadow = true;
 escena.add(mesa);
 
-// PASTEL DE CUMPLE (Movido ligeramente a la izquierda para balancear con el adorno)
+// PASTEL DE CUMPLE (Centrado de manera original)
 const grupoPastel = new THREE.Group();
-grupoPastel.position.set(-2.5, 0.3, -1.5);
+grupoPastel.position.set(0, 0.3, -2.5);
 
 const plato = new THREE.Mesh(
     new THREE.CylinderGeometry(1.6, 1.7, 0.1, 32),
@@ -80,7 +80,7 @@ grupoPastel.add(plato);
 
 const cuerpoPastel = new THREE.Mesh(
     new THREE.CylinderGeometry(1.3, 1.3, 1.1, 32),
-    new THREE.MeshStandardMaterial({ color: 0xff69b4, roughness: 0.5 }) // Tono rosa alegre
+    new THREE.MeshStandardMaterial({ color: 0xff69b4, roughness: 0.5 })
 );
 cuerpoPastel.position.y = 0.6;
 cuerpoPastel.castShadow = true;
@@ -107,7 +107,7 @@ for (let i = 0; i < 40; i++) {
     grupoPastel.add(chispa);
 }
 
-// VELA ENCENDIDA (Emisión de luz realzada)
+// VELA ENCENDIDA
 const grupoVela = new THREE.Group();
 grupoVela.position.set(0, 1.35, 0);
 
@@ -127,9 +127,9 @@ grupoVela.add(mechaEncendida);
 grupoPastel.add(grupoVela);
 escena.add(grupoPastel);
 
-// CAJA DE REGALO LLAMATIVA (Azul eléctrico con lazo dorado - Movido a la derecha)
+// CAJA DE REGALO LLAMATIVA (Centrada al frente para el usuario móvil)
 const grupoRegalo = new THREE.Group();
-grupoRegalo.position.set(2.5, 1, 1.5);
+grupoRegalo.position.set(0, 1, 1.5);
 
 const cuerpoCaja = new THREE.Mesh(
     new THREE.BoxGeometry(2, 2, 2),
@@ -152,40 +152,6 @@ const liston = new THREE.Mesh(
 );
 grupoRegalo.add(liston);
 escena.add(grupoRegalo);
-
-// --- NUEVO: ADORNO DEL NÚMERO 35 DE NEÓN ---
-const canvasTexto = document.createElement('canvas');
-const ctx = canvasTexto.getContext('2d');
-canvasTexto.width = 512;
-canvasTexto.height = 512;
-
-ctx.clearRect(0, 0, 512, 512);
-ctx.font = 'bold 280px Arial';
-ctx.textAlign = 'center';
-ctx.textBaseline = 'middle';
-ctx.fillStyle = '#ffffff';
-ctx.shadowColor = '#ffcc00';
-ctx.shadowBlur = 30;
-ctx.strokeStyle = '#ffaa00';
-ctx.lineWidth = 15;
-ctx.strokeText('35', 256, 256);
-ctx.fillText('35', 256, 256);
-
-const texturaTexto = new THREE.CanvasTexture(canvasTexto);
-const geoAdorno = new THREE.PlaneGeometry(2.5, 2.5);
-const matAdorno = new THREE.MeshStandardMaterial({
-    map: texturaTexto,
-    transparent: true,
-    side: THREE.DoubleSide,
-    roughness: 0.1,
-    metalness: 0.1,
-    emissive: 0xffaa00,
-    emissiveIntensity: 0.5
-});
-
-const adorno35 = new THREE.Mesh(geoAdorno, matAdorno);
-adorno35.position.set(0, 1.5, -1.5); // Justo en el eje central superior de la mesa
-escena.add(adorno35);
 
 // SISTEMA DE CONFETI EN MOVIMIENTO
 const grupoConfeti = new THREE.Group();
@@ -266,11 +232,9 @@ let cartaHover = null;
 
 function actualizarMouse(evento) {
     if (evento.touches && evento.touches.length > 0) {
-        // Coordenadas para pantallas táctiles
         mouse.x = (evento.touches[0].clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(evento.touches[0].clientY / window.innerHeight) * 2 + 1;
     } else {
-        // Coordenadas para mouse convencional
         mouse.x = (evento.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(evento.clientY / window.innerHeight) * 2 + 1;
     }
@@ -312,6 +276,7 @@ function procesarToqueOSeleccion(evento) {
     raycaster.setFromCamera(mouse, camara);
     
     if (!regaloAbierto) {
+        // CORREGIDO: "true" obligatorio para que lea los hijos (cuerpo, tapa, listón) dentro de móviles
         const interseccionesRegalo = raycaster.intersectObjects(grupoRegalo.children, true);
         if (interseccionesRegalo.length > 0) abrirGranSorpresa();
     } else {
@@ -326,7 +291,6 @@ function procesarToqueOSeleccion(evento) {
     }
 }
 
-// Eventos de interacción cruzada
 window.addEventListener('click', procesarToqueOSeleccion);
 window.addEventListener('touchstart', procesarToqueOSeleccion, { passive: true });
 
@@ -341,7 +305,7 @@ function abrirGranSorpresa() {
     if (regaloAbierto || animandoApertura) return;
     animandoApertura = true;
     document.getElementById('titulo').innerText = "✨ ¡Sorpresa! ✨";
-    document.getElementById('subtitulo').innerText = "Pasa el mouse sobre las cartas para expandir tus recuerdos";
+    document.getElementById('subtitulo').innerText = "Toca las cartas para ver tus recuerdos";
 }
 
 function verFoto(index) {
@@ -356,19 +320,17 @@ grupoCartas.children.forEach(carta => {
     carta.position.y = -1;
 });
 
-// --- 6. BUCLE DE RENDERIZADO (CORREGIDO) ---
+// --- 6. BUCLE DE RENDERIZADO ---
 const reloj = new THREE.Clock();
 
 function bucleAnidado() {
     requestAnimationFrame(bucleAnidado);
     const tiempoTotal = reloj.getElapsedTime();
 
-    // Parpadeo festivo y brillante de la vela
     const parpadeo = Math.sin(tiempoTotal * 22) * 0.25;
     luzVela.intensity = 3 + parpadeo;
     mechaEncendida.material.emissiveIntensity = 8 + parpadeo * 2;
 
-    // Animación física del confeti cayendo continuamente
     confetis.forEach(c => {
         c.mesh.position.y -= c.velY;
         c.mesh.rotation.x += c.rotX;
@@ -380,13 +342,11 @@ function bucleAnidado() {
         }
     });
 
-    // Levitación sutil del regalo antes de abrirse
     if (!regaloAbierto && !animandoApertura) {
         grupoRegalo.position.y = 1.1 + Math.sin(tiempoTotal * 2.5) * 0.12;
         grupoRegalo.rotation.y += 0.005;
     }
 
-    // Cinemática de apertura interactiva
     if (animandoApertura) {
         if (!tapaAbierta) {
             tapaCaja.position.z = THREE.MathUtils.lerp(tapaCaja.position.z, tapaCaja.position.z - 2.5, 0.05);
@@ -418,7 +378,6 @@ function bucleAnidado() {
         }
     }
 
-    // Transición cinematográfica de cámara hacia los recuerdos
     if (regaloAbierto || animandoApertura) {
         camara.position.y = THREE.MathUtils.lerp(camara.position.y, objCamaraY, 0.04);
         camara.position.z = THREE.MathUtils.lerp(camara.position.z, objCamaraZ, 0.04);
